@@ -4,10 +4,9 @@
 ## Запуск
 1. Зарегистрируйтесь на [CoinMarketCap](https://coinmarketcap.com/api/) для получения API-ключа
 2. Создайте бота через [@BotFather](https://t.me/BotFather)
-3. Заполните `src/config.py`
+3. создайте `src/.env`, внесите в него `COINMARKETCAP_API_KEY=apikey1` и `TELEGRAM_BOT_TOKEN=apikey2`
 4. Установите зависимости: `pip install -r requirements.txt`
-5. Запустите сборщик данных: `python src/data_collector.py`
-6. Запустите бота: `python src/bot.py`
+5. Запустите бота: `python src/bot.py`
 
 ## Функционал
 - Автоматический сбор цен каждые 5 минут
