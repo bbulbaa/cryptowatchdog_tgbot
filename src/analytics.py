@@ -1,8 +1,11 @@
+import logging
 import os
 import sqlite3
 import pandas as pd
 from datetime import datetime, timedelta, timezone
-from config import DB_PATH
+from .config import *
+
+logger = logging.getLogger(__name__)
 
 def generate_report():
     """Генерация аналитического отчета"""

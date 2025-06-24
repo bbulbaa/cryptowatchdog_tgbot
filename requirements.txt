@@ -3,3 +3,4 @@ pandas
 python-telegram-bot
 sqlalchemy
 dotenv
+"fastapi[all]" sqlalchemy

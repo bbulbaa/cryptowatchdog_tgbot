@@ -2,11 +2,14 @@ import os
 import threading
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
-from config import TG_TOKEN, TRACKED_COINS
-from analytics import get_coin_history, generate_report
-from database import init_db
-from data_collector import fetch_crypto_prices
+from .data_collector import LAST_UPDATE_TIME, fetch_crypto_prices
+from .config import *
+from .analytics import get_coin_history, generate_report
+from .database import init_db
 import logging
+import asyncio
+
+logger = logging.getLogger(__name__)
 
 logging.getLogger("httpx").setLevel(logging.WARNING) # чтобы не шумело 
 def start_data_collector():
@@ -55,8 +58,6 @@ async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"❌ Ошибка генерации отчета: {str(e)}")
 
 async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    from data_collector import LAST_UPDATE_TIME  # Добавить глобальную переменную в data_collector
-    
     status_msg = (
         f"🟢 Бот активен\n"
         f"Последнее обновление: {LAST_UPDATE_TIME.strftime('%H:%M:%S') if LAST_UPDATE_TIME else 'никогда'}\n"
@@ -65,6 +66,9 @@ async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(status_msg)
 
 def main():
+    # Инициализация логирования
+    setup_logging()
+    
     # Инициализация БД
     init_db()
     
@@ -73,6 +77,10 @@ def main():
     data_thread.daemon = True  # Демонизируем поток
     data_thread.start()
     
+    if not data_thread.is_alive():
+        print("ОШИБКА: Поток сбора данных не запустился!")
+        exit(1)
+
     # Создаем приложение
     application = Application.builder().token(TG_TOKEN).build()
     
@@ -80,7 +88,8 @@ def main():
     command_handlers = [
         CommandHandler("start", start),
         CommandHandler("prices", prices),
-        CommandHandler("report", report)
+        CommandHandler("report", report),
+        CommandHandler("status", status)
     ]
     
     for handler in command_handlers:
