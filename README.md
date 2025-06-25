@@ -34,7 +34,7 @@
 
 ### Установка
 ```bash
-git clone https://github.com/yourusername/cryptowatchdog.git
+git clone https://github.com/bbulbaa/cryptowatchdog_tgbot/
 cd cryptowatchdog
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
